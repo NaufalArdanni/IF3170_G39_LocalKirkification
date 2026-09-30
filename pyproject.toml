@@ -1,0 +1,79 @@
+[project]
+name = "mejiro-express"
+version = "0.1.0"
+description = "Local search (hill climbing, simulated annealing, genetic algorithm) for container loading. IF3170 Tugas Besar 1, Kelompok 39."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = ["matplotlib>=3.11.2", "numpy>=2.5.3", "plotly>=7.1.0"]
+
+[project.scripts]
+mejiro-express = "mejiro_express.__main__:main"
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.168.3",
+    "mypy>=2.3.1",
+    "pre-commit>=4.6.2",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.9",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",    # pycodestyle, pyflakes
+    "I",    # import sorting
+    "N",    # naming
+    "UP",   # pyupgrade (modern syntax)
+    "B",
+    "C4",
+    "SIM",
+    "PIE",
+    "RET",
+    "ARG",
+    "PTH",  # pathlib over os.path
+    "PERF",
+    "NPY",  # performance, numpy
+    "PL",   # pylint
+    "RUF",
+    "S",    # ruff-specific, security
+    "D",    # docstrings (feeds the report)
+    "T20",  # no stray print()
+]
+ignore = ["D100", "D104", "D105", "D107", "PLR2004", "PLR0913"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "D", "PLR2004"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+strict = true
+python_version = "3.14"
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["plotly.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config --cov=mejiro_express --cov-report=term-missing"
+
+[tool.coverage.report]
+fail_under = 0
