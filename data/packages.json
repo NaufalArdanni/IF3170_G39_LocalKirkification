@@ -1,0 +1,32 @@
+{
+  "truck": {
+    "dims": [8, 16, 4],
+    "maxCapacity": 200
+  },
+  "packages": [
+    {
+      "id": "P00",
+      "dims": [3, 4, 1],
+      "value": 60,
+      "weight": 5,
+      "isFragile": false,
+      "eta": 3
+    },
+    {
+      "id": "P01",
+      "dims": [2, 2, 2],
+      "value": 40,
+      "weight": 8,
+      "isFragile": true,
+      "eta": 1
+    },
+    {
+      "id": "P02",
+      "dims": [2, 2, 1],
+      "value": 30,
+      "weight": 2,
+      "isFragile": false,
+      "eta": 2
+    }
+  ]
+}

@@ -50,3 +50,15 @@ class State:
         s = State(self.packages, self.truck)
         s.pos = list(self.pos)
         return s
+        
+    def to_dict(self):  # pos None -> null di JSON, berarti paket di luar truk
+        return {
+            "truck": {"dims": list(self.truck.dims), "maxCapacity": self.truck.maxCapacity},
+            "packages": [
+                {"id": p.id, "dims": list(p.dims), "orient": list(p.orient),
+                 "size": list(self.size(i)),   # ukuran setelah orientasi, memudahkan visualisasi
+                 "pos": list(self.pos[i]) if self.pos[i] is not None else None,
+                 "value": p.value, "weight": p.weight, "isFragile": p.isFragile, "eta": p.eta}
+                for i, p in enumerate(self.packages)
+            ],
+        }
