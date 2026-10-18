@@ -5,7 +5,7 @@ from mejiro_express.objective import score
 
 
 def steepest_ascent(init, max_iter=1000, k_move=100):
-    t0 = time.time()
+    t0 = time.perf_counter()
     cur, cur_sc = init.copy(), score(init)
     hist = [cur_sc]
     iterations = 0
@@ -25,6 +25,6 @@ def steepest_ascent(init, max_iter=1000, k_move=100):
         "final_state": cur,
         "final_score": cur_sc,
         "history": hist,
-        "duration": time.time() - t0,
+        "duration": time.perf_counter() - t0,
         "iterations": iterations,
     }

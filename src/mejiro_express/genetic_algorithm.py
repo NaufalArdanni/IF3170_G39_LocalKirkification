@@ -17,7 +17,7 @@ def _crossover(a, b):
 def genetic_algorithm(
     packages, truck, pop_size=50, generations=100, p_mut=0.3, k_tour=3
 ):
-    t0 = time.time()
+    t0 = time.perf_counter()
     pop = [State.random_init(packages, truck) for _ in range(pop_size)]
     scores = [score(s) for s in pop]
     init_best = pop[max(range(pop_size), key=scores.__getitem__)].copy()
@@ -51,5 +51,5 @@ def genetic_algorithm(
         "hist_avg": hist_avg,
         "pop_size": pop_size,
         "generations": generations,
-        "duration": time.time() - t0,
+        "duration": time.perf_counter() - t0,
     }
