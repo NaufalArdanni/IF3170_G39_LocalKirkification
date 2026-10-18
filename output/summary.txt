@@ -1,0 +1,9 @@
+konfigurasi                           min     mean      max  durasi(s)  valid  stuck
+ga_ctrliter_pop100_gen100           984.0    989.7   1000.0       0.87    3/3      -
+ga_ctrliter_pop20_gen100            888.0    926.7    956.0       0.15    3/3      -
+ga_ctrliter_pop50_gen100            901.0    947.0   1029.0       0.42    3/3      -
+ga_ctrlpop_pop50_gen100             901.0    947.0   1029.0       0.39    3/3      -
+ga_ctrlpop_pop50_gen200             934.0    979.3   1046.0       0.92    3/3      -
+ga_ctrlpop_pop50_gen50              848.0    889.7    969.0       0.19    3/3      -
+hc                                  946.0    987.3   1054.0       0.74    3/3      -
+sa                                 1082.0   1090.7   1098.0       2.07    3/3    8.7
