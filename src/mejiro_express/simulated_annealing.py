@@ -15,10 +15,9 @@ def simulated_annealing(init, t0=100.0, alpha=0.999, max_iter=20000, stuck_limit
     for _ in range(max_iter):
         n = random_neighbor(cur)
         delta = score(n) - cur_sc
-        p = 1.0 if delta > 0 else math.exp(delta / T)  # peluang menerima (maks 1)
-        probs.append(
-            math.exp(min(delta / T, 50))
-        )  # e^(dE/T) mentah untuk plot, dibatasi agar tidak overflow
+        # peluang menerima = min(1, e^(dE/T)); bernilai 1 jika delta >= 0
+        p = math.exp(min(delta / T, 0.0))
+        probs.append(p)  # nilai e^(dE/T) yang diplot, dalam rentang [0, 1]
         if random.random() < p:
             cur, cur_sc = n, cur_sc + delta
             if cur_sc > best_sc:

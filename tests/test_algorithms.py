@@ -28,6 +28,7 @@ def test_simulated_annealing(packages: list[Package], truck: Truck) -> None:
     res = simulated_annealing(init, t0=100.0, max_iter=200)
     assert len(res["history"]) == 201
     assert len(res["exp_history"]) == 200
+    assert all(0.0 <= p <= 1.0 for p in res["exp_history"])
     assert res["final_score"] >= score(init)
     assert res["final_score"] == score(res["final_state"])
 
