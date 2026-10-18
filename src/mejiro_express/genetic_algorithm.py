@@ -30,9 +30,7 @@ def genetic_algorithm(
         new = [elite.copy()]  # elitisme: individu terbaik selalu lolos
         while len(new) < pop_size:
             pa, pb = (
-                pop[
-                    max(random.sample(range(pop_size), k_tour), key=scores.__getitem__)
-                ]  # seleksi
+                pop[max(random.sample(range(pop_size), k_tour), key=scores.__getitem__)]
                 for _ in range(2)
             )
             child = _crossover(pa, pb)
@@ -43,6 +41,8 @@ def genetic_algorithm(
         if max(scores) > best_sc:
             best_sc = max(scores)
             best = pop[scores.index(best_sc)].copy()
+    hist_max.append(max(scores))
+    hist_avg.append(sum(scores) / pop_size)
     return {
         "initial_state": init_best,
         "final_state": best,
