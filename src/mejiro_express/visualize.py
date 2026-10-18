@@ -1,7 +1,9 @@
 import json
 import textwrap
 from collections import defaultdict
+from itertools import accumulate
 from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -44,7 +46,7 @@ def draw_state(ax, st, title):
             edgecolors="black",
             linewidths=1,
         )
-    )  # rangka kontainer truck
+    )
     outside = []
     for p in st["packages"]:
         if p["pos"] is None:
@@ -86,52 +88,107 @@ def plot_states(res, name):
             transform=ax.transAxes,
             fontsize=7,
             va="top",
-        )  # merah = fragile
+        )
+    fig.suptitle(
+        "Biru = paket biasa, merah = pecah-belah (fragile)", fontsize=9, y=1.02
+    )
     fig.savefig(PLOTS / f"{name}_states.png", dpi=120, bbox_inches="tight")
     plt.close(fig)
 
 
 def plot_curves(res, name):
-    fig, ax = plt.subplots()
     if "hist_max" in res:  # GA: maksimum dan rata-rata populasi
-        ax.plot(res["hist_max"], label="maksimum")
-        ax.plot(res["hist_avg"], label="rata-rata")
-        ax.set_xlabel("Generasi")
-        ax.legend()
+        series = [("maksimum", res["hist_max"]), ("rata-rata", res["hist_avg"])]
+        xlabel = "Generasi"
     else:
-        ax.plot(res["history"])
-        ax.set_xlabel("Iterasi")
-    ax.set_ylabel("Nilai objective function")
-    ax.set_title(name)
-    fig.savefig(PLOTS / f"{name}_objective.png", dpi=120)
+        series = [("objective function", res["history"])]
+        xlabel = "Iterasi"
+    fig, (full, zoom) = plt.subplots(1, 2, figsize=(12, 4.5))
+    for ax in (full, zoom):
+        for label, values in series:
+            ax.plot(values, label=label)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel("Nilai objective function")
+        ax.legend()
+    full.set_title(f"{name}: seluruh rentang")
+    zoom.set_title(f"{name}: diperbesar (nilai >= 0)")
+    top = max(max(values) for _, values in series)
+    if top > 0:
+        zoom.set_ylim(0, top * 1.05)
+    fig.tight_layout()
+    fig.savefig(PLOTS / f"{name}_objective.png", dpi=120, bbox_inches="tight")
     plt.close(fig)
-    if "exp_history" in res:  # khusus SA: e^(dE/T) per iterasi
-        fig, ax = plt.subplots()
-        ax.plot(res["exp_history"], linewidth=0.5)
+
+
+def _moving_average(values, window):
+    csum = [0.0, *accumulate(values)]
+    out = []
+    for i in range(len(values)):
+        lo = max(0, i + 1 - window)
+        out.append((csum[i + 1] - csum[lo]) / (i + 1 - lo))
+    return out
+
+
+def plot_probability(res, name):
+    probs = res["exp_history"]
+    fig, (raw, avg) = plt.subplots(1, 2, figsize=(12, 4.5))
+    raw.scatter(range(len(probs)), probs, s=1, alpha=0.3)
+    raw.set_title(f"{name}: e^(ΔE/T) per iterasi")
+    avg.plot(_moving_average(probs, 200))
+    avg.set_title(f"{name}: rata-rata bergerak (jendela 200)")
+    for ax in (raw, avg):
         ax.set_xlabel("Iterasi")
         ax.set_ylabel("e^(ΔE/T)")
-        ax.set_title(f"{name}: probabilitas")
-        fig.savefig(PLOTS / f"{name}_exp.png", dpi=120)
-        plt.close(fig)
+    fig.tight_layout()
+    fig.savefig(PLOTS / f"{name}_exp.png", dpi=120, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_summary(groups):
+    labels = list(groups)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    ax1.boxplot(
+        [[r["final_score"] for r in rs] for rs in groups.values()], tick_labels=labels
+    )
+    ax1.set_title("Nilai akhir per konfigurasi (3 run)")
+    ax1.set_ylabel("Nilai objective function akhir")
+    ax2.bar(
+        labels, [sum(r["duration"] for r in rs) / len(rs) for rs in groups.values()]
+    )
+    ax2.set_yscale("log")
+    ax2.set_title("Durasi rata-rata per konfigurasi")
+    ax2.set_ylabel("Durasi (detik, skala log)")
+    for ax in (ax1, ax2):
+        ax.tick_params(axis="x", labelrotation=60)
+    fig.tight_layout()
+    fig.savefig(PLOTS / "summary.png", dpi=120, bbox_inches="tight")
+    plt.close(fig)
 
 
 def main():
     PLOTS.mkdir(parents=True, exist_ok=True)
-    groups = defaultdict(list)
+    groups: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
     for f in sorted(OUT.glob("*.json")):
         res = json.loads(f.read_text())
         plot_states(res, f.stem)
         plot_curves(res, f.stem)
+        if "exp_history" in res:
+            plot_probability(res, f.stem)
         groups[f.stem.rsplit("_run", 1)[0]].append(res)
-    # ringkasan per konfigurasi  untuk analisis konsistensi dan perbandingan durasi
+    plot_summary(groups)
     print(
-        f"{'konfigurasi':32} {'min':>8} {'mean':>8} {'max':>8} {'durasi(s)':>10} valid"
+        f"{'konfigurasi':32} {'min':>8} {'mean':>8} {'max':>8} "
+        f"{'durasi(s)':>10} {'valid':>6} {'stuck':>6}"
     )
     for cfg, rs in groups.items():
         sc = [r["final_score"] for r in rs]
+        stuck = [r["stuck_count"] for r in rs if "stuck_count" in r]
+        stuck_txt = f"{sum(stuck) / len(stuck):.1f}" if stuck else "-"
+        n_valid = sum(r["final_state"]["valid"] for r in rs)
+        mean_duration = sum(r["duration"] for r in rs) / len(rs)
         print(
             f"{cfg:32} {min(sc):8.1f} {sum(sc) / len(sc):8.1f} {max(sc):8.1f} "
-            f"{sum(r['duration'] for r in rs) / len(rs):10.2f} {sum(r['final_state']['valid'] for r in rs)}/{len(rs)}"
+            f"{mean_duration:10.2f} {f'{n_valid}/{len(rs)}':>6} {stuck_txt:>6}"
         )
 
 
