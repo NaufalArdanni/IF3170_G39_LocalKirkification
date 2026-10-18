@@ -6,6 +6,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+plt.switch_backend("Agg")  # simpan ke file saja, tanpa GUI
+
 OUT = Path(__file__).resolve().parents[2] / "output"
 PLOTS = OUT / "plots"
 
