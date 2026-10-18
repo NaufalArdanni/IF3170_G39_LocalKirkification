@@ -1,0 +1,3 @@
+weight bound = 1142.0
+volume bound = 1628.0
+upper bound  = 1142.0
