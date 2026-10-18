@@ -7,7 +7,7 @@ from mejiro_express.objective import score
 
 
 def simulated_annealing(init, t0=100.0, alpha=0.999, max_iter=20000, stuck_limit=200):
-    t_start = time.time()
+    t_start = time.perf_counter()
     cur, cur_sc = init.copy(), score(init)
     best, best_sc = cur, cur_sc
     hist, probs = [cur_sc], []
@@ -43,5 +43,5 @@ def simulated_annealing(init, t0=100.0, alpha=0.999, max_iter=20000, stuck_limit
         "iterations": max_iter,
         "t0": t0,
         "alpha": alpha,
-        "duration": time.time() - t_start,
+        "duration": time.perf_counter() - t_start,
     }
