@@ -3,7 +3,7 @@
 
 def main() -> None:
     """Run the Mejiro Express CLI."""
-    print("Mejiro Express: not implemented yet.")  # noqa: T201
+    print("Mejiro Express: not implemented yet.")
 
 
 if __name__ == "__main__":
