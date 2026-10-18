@@ -39,5 +39,7 @@ def test_genetic_algorithm(packages: list[Package], truck: Truck) -> None:
     assert res["pop_size"] == 6
     assert res["generations"] == 5
     assert len(res["hist_max"]) == len(res["hist_avg"])
+    assert len(res["hist_max"]) == 6
+    assert res["hist_max"][-1] == res["final_score"]
     assert res["final_score"] >= res["hist_max"][0]
     assert res["final_score"] == score(res["final_state"])
