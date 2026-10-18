@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Local search (hill climbing, simulated annealing, genetic algorithm) for container loading. IF3170 Tugas Besar 1, Kelompok 39."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["matplotlib>=3.11.2", "numpy>=2.5.3", "plotly>=7.1.0"]
+dependencies = ["matplotlib>=3.11.2"]
 
 [project.scripts]
 mejiro-express = "mejiro_express.__main__:main"
@@ -75,10 +75,6 @@ docstring-code-format = true
 strict = true
 python_version = "3.14"
 files = ["src", "tests"]
-
-[[tool.mypy.overrides]]
-module = ["plotly.*"]
-ignore_missing_imports = true
 
 # TODO(typing): annotate the algorithm modules, then delete this override.
 [[tool.mypy.overrides]]
