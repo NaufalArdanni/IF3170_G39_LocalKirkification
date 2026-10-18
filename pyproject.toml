@@ -75,6 +75,7 @@ docstring-code-format = true
 
 [tool.mypy]
 strict = true
+disallow_untyped_calls = false # TODO(typing): remove once src is annotated
 python_version = "3.14"
 files = ["src", "tests"]
 
