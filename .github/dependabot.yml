@@ -7,6 +7,9 @@ updates:
       interval: weekly
     commit-message:
       prefix: "chore"
+    groups:
+      actions:
+        patterns: ["*"]
   - package-ecosystem: uv
     directory: /
     target-branch: dev
@@ -14,3 +17,16 @@ updates:
       interval: weekly
     commit-message:
       prefix: "chore"
+    groups:
+      python-deps:
+        patterns: ["*"]
+  - package-ecosystem: pre-commit
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore"
+    groups:
+      hooks:
+        patterns: ["*"]
