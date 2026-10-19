@@ -6,7 +6,7 @@
 
 Tugas Besar 1 IF3170 Inteligensi Artifisial · Semester 1 2026/2027 · Kelompok LocalKirkification (39)
 
-[![CI](https://github.com/NaufalArdanni/IF3170_G39_LocalKirkification/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/NaufalArdanni/IF3170_G39_LocalKirkification/actions/workflows/ci.yml)
+[![CI](https://github.com/NaufalArdanni/IF3170_G39_LocalKirkification/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/NaufalArdanni/IF3170_G39_LocalKirkification/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.14%2B-3776AB?logo=python&logoColor=white)
 [![uv](https://img.shields.io/badge/package%20manager-uv-DE5FE9)](https://docs.astral.sh/uv/)
 [![Ruff](https://img.shields.io/badge/lint%20%26%20format-ruff-D7FF64)](https://docs.astral.sh/ruff/)
@@ -64,7 +64,7 @@ score(state) = (total value paket di dalam truk) − 1000 × (jumlah pelanggaran
 | Pecah-belah | Paket pecah-belah tidak boleh menjadi penopang paket lain |
 | Kapasitas | Total berat paket di dalam truk tidak boleh melebihi kapasitas |
 
-Penalti 1000 lebih besar daripada *value* paket mana pun (maksimum 100) sehingga *state* yang melanggar batasan tidak pernah lebih baik daripada *state* valid yang setara. Penalti memungkinkan pencarian melewati *state* yang belum valid.
+Penalti 1000 lebih besar daripada *value* paket mana pun (maksimum 100) sehingga suatu pelanggaran selalu lebih mahal daripada keuntungan dari satu paket. Penalti memungkinkan pencarian melewati *state* yang belum valid.
 
 ### Algoritma
 
