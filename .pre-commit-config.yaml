@@ -16,12 +16,18 @@ repos:
       - id: detect-private-key
       - id: no-commit-to-branch
         args: [--branch, main, --branch, dev]
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.9
+  - repo: local
     hooks:
       - id: ruff-check
-        args: [--fix]
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types: [python]
       - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types: [python]
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.12.21
     hooks:
